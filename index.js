@@ -3,6 +3,7 @@ const express = require('express');
 const http = require('http');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const dishRouter = require('./routes/dishRouter');
 ///pre-configuration for server
 const hostname = 'localhost';
 const port = 3000;
@@ -13,40 +14,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
+app.use('/dishes', dishRouter);
 //REST api endpoints configurations
-app.all('/dishes', (reuest, response, next)=>{
-    response.statusCode = 200;
-    response.setHeader('Content-Type', 'text/plain');
-    next();//will be executed before all api requests
-});
-app.get('/dishes', (request,response, next)=>{
-    response.end('Will send all dishes to client!');
-});
-app.post('/dishes', (request, response, next)=>{
-    response.end('will add the dish:' + request.body.name + 'with details' + request.body.description);
-});
-app.put('/dishes', (request, response, next)=>{
-    response.statusCode = 403;
-    response.end('PUT operation is not supported on dishes');
-});
-app.delete('/dishes', (request,response, next)=>{
-    response.end('!!!Deleting all the dishes!!!');
-});
 
-app.get('/dishes/:dishId', (request,response, next)=>{
-    response.end('Will send details of dish: ' + request.params.dishId);
-});
-app.put('/dishes/:dishId', (request, response, next)=>{
-    response.write('Updating the dish: '+request.params.dishId+'\n');
-    response.end('will update the dish: ' + request.body.name + ' with details: ' + request.body.description);
-});
-app.post('/dishes/:dishId', (request, response, next)=>{
-    response.statusCode = 403;
-    response.end('POST operation is not supported on dish: ' + request.params.dishId);
-});
-app.delete('/dishes/:dishId', (request,response, next)=>{
-    response.end('!!!Deleting athe dish: ' + request.params.dishId);
-});
 ///setup the http server
 app.use((request, response, next) => {
     response.statusCode = 200;
